@@ -1,0 +1,43 @@
+/** Шрифты **/
+.font(@fontName; @urlName: @fontName; @weight: normal; @style: normal) {
+  font-family: '@{fontName}';
+  src: url('/fonts/@{urlName}/@{urlName}.eot');
+  src: url('/fonts/@{urlName}/@{urlName}.eot#iefix') format('embedded-opentype'),
+  url('/fonts/@{urlName}/@{urlName}.woff') format('woff'),
+  url('/fonts/@{urlName}/@{urlName}.ttf') format('truetype'),
+  url('/fonts/@{urlName}/@{urlName}.svg') format('svg');
+  font-weight: @weight;
+  font-style: @style;
+}
+
+@urlName: 'OpenSansCondensed';
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: @urlName, sans-serif;
+}
+
+body {
+  background: #edeef0;
+}
+
+.main {
+  position: relative;
+  min-width: 1000px;
+  min-height: 100vh;
+  padding-top: 42px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-self: stretch;
+  z-index: 1;
+}
+
+.container-width {
+  position: relative;
+  max-width: 1000px;
+  margin: auto;
+}
