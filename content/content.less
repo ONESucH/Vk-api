@@ -232,6 +232,16 @@
   }
 }
 
+.href {
+  padding-bottom: 1px;
+  cursor: pointer;
+  color: #939393;
+  &:hover {
+    padding-bottom: 0;
+    border-bottom: 1px solid #939393;
+  }
+}
+
 .wallpapers {
   position: relative;
   max-height: 145px;
@@ -358,7 +368,7 @@
   text-transform: capitalize;
 }
 
-.user-name {
+.user-name, .data-user {
   padding-left: 5px;
 }
 
@@ -529,16 +539,231 @@
 }
 
 .add-post {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between!important;
   position: relative;
+  padding: 10px;
   background: #fff;
   border-radius: 2px;
   box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
   margin: 15px 0 0;
+  div {
+    align-items: stretch;
+  }
+  div:nth-child(2) {
+    flex-grow: 10;
+  }
 }
 
 .ava {
+  margin-right: 15px;
   a {
-    overflow: hidden;
+    display: flex;
+    cursor: pointer;
+  }
+  img {
     border-radius: 100%;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.write-post {
+  label {
+    display: flex;
+    height: 100%;
+  }
+  input {
+    background: 0;
+    width: 100%;
+    border: none;
+    outline: none;
+  }
+  input::-webkit-input-placeholder {color:#828282;}
+  input::-moz-placeholder          {color:#828282;}/* Firefox 19+ */
+  input:-moz-placeholder           {color:#828282;}/* Firefox 18- */
+  input:-ms-input-placeholder      {color:#828282;}
+}
+
+.icons a {
+  cursor: pointer;
+}
+
+.post {
+  position: relative;
+  padding: 15px;
+}
+
+.top-title {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  img {
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+  }
+  a {
+    color: #c4cfdb;
+    font-size: 21px;
+    cursor: pointer;
+  }
+}
+
+.user-name-last-name {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  list-style: none;
+  flex-grow: 10;
+  padding-left: 10px;
+  li {
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: 500;
+    color: #2a5885;
+    text-decoration: none;
+    padding-left: 0!important;
+    width: max-content;
+    cursor: pointer;
+    padding-bottom: 1px;
+    &:hover {
+      padding-bottom: 0;
+      border-bottom: 1px solid #2a5885;
+    }
+  }
+}
+
+.data-user {
+  color: #939393!important;
+  margin-top: 2px;
+}
+
+.show-menu-post {
+  position: absolute;
+  right: 0;
+  top: 45px;
+  display: none;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #c5d0db;
+  padding: 4px 0;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+  z-index: 4;
+  &:hover {
+    display: flex;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: -8px;
+    z-index:3;
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #c5d0db;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    right: 16px;
+    top: -6px;
+    z-index: 5;
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 6px solid #fff;
+  }
+  li {
+    justify-content: flex-start;
+    align-items: center;
+    color: #2a5885;
+    cursor: pointer;
+    text-align: left;
+    padding: 8px 15px;
+    width: 135px;
+    &:hover {
+      background: #e4eaf0;
+    }
+  }
+}
+
+.show-user-block:hover + .show-menu-post {
+  display: flex;
+}
+
+.post-information {
+  width: 100%;
+  p {
+    padding: 10px 0;
+    overflow: hidden;
+    word-wrap: break-word;
+  }
+}
+
+.page-post {
+  padding-bottom: 15px;
+}
+
+.footer-post {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  border-top: 1px solid #e7e8ec;
+  padding-top: 15px;
+  ul {
+    display: flex;
+    flex-flow: row nowrap;
+    list-style: none;
+    flex-grow: 1;
+  }
+  li {
+    margin-right: 6px;
+    color: #2a5885;
+    font-weight: 500;
+    font-size: 13px;
+    &:hover i {
+      opacity: .5;
+    }
+  }
+  i {
+    margin: auto 8px;
+    font-size: 15px;
+    cursor: pointer;
+    color: #2A5886;
+    opacity: .35;
+  }
+  span {
+    margin-left: 5px;
+  }
+}
+
+.counter-search-post {
+  flex-grow: 10;
+  text-align: right;
+  i {
+    opacity: .8;
+    color: #c0c4cc;
+    cursor: default;
+  }
+  span {
+    color: #909399;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: auto;
   }
 }
