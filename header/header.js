@@ -1,3 +1,5 @@
+'use strict';
+
 $(document).ready(function () {
     var storageTokken =  localStorage.getItem('Tokken'); // берём по ключу
 
