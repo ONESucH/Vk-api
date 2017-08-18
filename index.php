@@ -26,7 +26,7 @@
 <script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="header/header.min.js"></script>
 <script src="left-bar/left-bar.min.js"></script>
-<script src="content/content.min.js"></script>
+<script src="content/content.js"></script>
 <script src="footer/footer.min.js"></script>
 </body>
 </html>

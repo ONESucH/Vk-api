@@ -7,7 +7,7 @@ $(document).ready(function () {
     $.ajax({
         maethod: 'POST',
         url: 'https://api.vk.com/method/users.get?v=5.52&access_token=' + storageTokken,
-        dataType : "jsonp"
+        dataType : 'jsonp'
     }).done(function (data) {
         var userName = document.getElementsByClassName('user-name')[0];
 

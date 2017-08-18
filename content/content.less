@@ -146,12 +146,43 @@
   font-size: 12.5px;
 }
 
+.friends-page, .friends-page-online {
+  position: relative;
+  display: flex;
+  flex-flow: row wrap!important;
+  justify-content: flex-start!important;
+  align-items: stretch;
+  li {
+    display: flex;
+    flex-flow: column-reverse nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 33%!important;
+  }
+  img {
+    border-radius: 100%;
+    width: 50px!important;
+    height: 50px!important;
+    margin: 10px auto
+  }
+  span {
+    margin: auto!important;
+    color: #2a5885!important;
+    cursor: pointer;
+    margin-top: -1px;
+    padding-bottom: 1px;
+    &:hover {
+      padding-bottom: 0;
+      border-bottom: 1px solid #2a5885;
+    }
+  }
+}
 
 .title {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between!important;
-  padding: 15px 15px 10px;
+  padding: 15px;
   border-bottom: 1px solid #e7e8ec;
   p {
     font-size: 12.5px;
@@ -164,7 +195,8 @@
     font-size: 12.5px;
   }
   a {
-    display: block;
+    position: relative;
+    display: flex;
     cursor: pointer;
   }
   ul {
@@ -249,25 +281,77 @@
 .wallpapers {
   position: relative;
   max-height: 145px;
+  min-width: 200px;
   width: 100%;
   text-align: center;
-  margin: 10px auto;
+  margin: 15px auto;
   img {
-    max-width: 200px;
-    height: 132px;
-    width: 200px;
+    display: block;
+    height: 100%;
+    zoom: .7;
+    width: 100%;
+  }
+  a {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
   }
   p {
     display: block;
     width: max-content;
     margin: 0;
-    padding: 7px 0 0;
+    padding: 7px 0 1px;
     color: #2a5885;
     cursor: pointer;
     &:hover {
       padding: 7px 0 0;
       border-bottom: 1px solid #2a5885;
     }
+  }
+}
+
+.play {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  &:hover:after {
+    background: rgba(0,0,0,.9);
+  }
+  &:hover:before {
+    border-top: 22px solid #fff;
+  }
+  &:first-child:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -5px;
+    right: 0;
+    background: rgba(0,0,0,.65);
+    margin: auto;
+    width: 60px;
+    height: 60px;
+    z-index: 1;
+    border-radius: 50%;
+    transition: background-color .1s linear;
+  }
+  &:first-child:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    margin: auto;
+    cursor: pointer;
+    transform: rotate(-90deg);
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 22px solid rgba(255, 255, 255, 0.76);
+    z-index: 2;
   }
 }
 
