@@ -1,164 +1,139 @@
-'use strict';
+// 6154467 - id app
+// 85927952 - useriD
 var logic = false;
+var offlineToken = 'https://oauth.vk.com/authorize?client_id=6154467&display=popup&scope=notify,friends,photos,audio,video,pages,status,notes,wall,ads,docs,groups,offline&redirect_uri=close.html&response_type=token';
+var tokenRender = '0d6928f435c3c9389f97af5f24922d42d17e7cb2102a7833e6984e05872b1e2f687ab74a53dee340533eb';
 
-$(document).ready(function () {
-    var url = 'https://oauth.vk.com/authorize?client_id=5894587&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=friend,photos,audio,video,status,wall,docs,groups,notifications,stats,email&response_type=token&v=5.52',
-        tokken = '852232340c77c38587d60695da83098c8776ee289d636b7bd8b57378a84b581d1786f2db1a609c076fe36';
+localStorage.setItem('token', tokenRender);  // сохраняем в local Storage
+var token = localStorage.getItem('token');  // извлекаем из local Storage
 
-    localStorage.setItem('Tokken', tokken); // записали токен в localstorage
+/** Получаем доступ к аккаунту **/
+window.vkAsyncInit = function() {
+    VK.init({apiId: 6154467});
+    VK.Auth.login(function (data) {
 
-    var storageTokken =  localStorage.getItem('Tokken'); // берём по ключу токкен
+        if (!data) {
+            console.log('Нет данных');
+            return false;
+        } else if (data.status === 'connected') {
+            // Получаем доступ к файлам
+            var photoAll = document.createElement('script'),
+                friendsAll = document.createElement('script');
 
-    /** Получаем данные для Контента **/
-    $.ajax({
-        maethod: 'POST',
-        url: 'https://api.vk.com/method/users.get?fields=photo_id,verified,sex,bdate,city,country,counters,home_town,has_photo,photo_50,photo_100,photo_200_orig,photo_200,photo_400_orig,photo_max,photo_max_orig,online,domain,has_mobile,contacts,site,education,universities,schools,status,last_seen,followers_count,common_count,occupation,nickname,relatives,relation,personal,connections,exports,wall_comments,activities,interests,music,movies,tv,books,games,about,quotes,can_post,can_see_all_posts,can_see_audio,can_write_private_message,can_send_friend_request,is_favorite,is_hidden_from_feed,timezone,screen_name,maiden_name,crop_photo,is_friend,friend_status,career,military,blacklisted,blacklisted_by_me&v=5.52&access_token=' + storageTokken,
-        dataType : 'jsonp'
-    }).done(function (data) {
-        var renderData = data.response[0];
+            photoAll.src = 'https://api.vk.com/method/photos.getAll?owner_id='+ data.session.user.id +'&count=4&access_token='+ token +'&callback=photoUsers';
+            friendsAll.src = 'https://api.vk.com/method/friends.get?user_id='+ data.session.user.id +'&list_id&order=random&fields=nickname,domain,sex,bdate,city,country,timezone,photo_50,photo_100,photo_200_orig,has_mobile,contacts,education,online,relation,last_seen,status,can_write_private_message,can_see_all_posts,can_post,universities&access_token='+ token +'&callback=friendsUsers';
 
-        localStorage.setItem('UserId', renderData.id);
+            document.getElementsByTagName('head')[0].appendChild(photoAll);
+            document.getElementsByTagName('head')[0].appendChild(friendsAll);
 
-        var userNameLastName = document.getElementsByClassName('last-name-name'),
-            statusUser = document.getElementsByClassName('status'),
-            dataUser = document.getElementsByClassName('data-user'),
-            countFriends = document.getElementsByClassName('count_friends'),
-            countMovies = document.getElementsByClassName('count_movies'),
-            countPhoto = document.getElementsByClassName('count_photo');
+            VK.Api.call('users.get', {user_ids:data.session.user.id, fields:'photo_id,verified,sex,bdate,city,country,home_town,has_photo,photo_50,' +
+            'photo_100,photo_200_orig,photo_200,photo_400_orig,photo_max,photo_max_orig,online,domain,has_mobile,contacts,site,education,universities,' +
+            'schools,status,last_seen,followers_count,common_count,occupation,nickname,relatives,relation,personal,connections,exports,wall_comments,activities,' +
+            'interests,music,movies,tv,books,games,about,quotes,can_post,counters,can_see_all_posts,can_see_audio,can_write_private_message,can_send_friend_request,' +
+            'is_favorite,is_hidden_from_feed,timezone,screen_name,maiden_name,crop_photo,is_friend,friend_status,career,military,blacklisted,' +
+            'blacklisted_by_me', access_token:token, v:'5.68'}, function(r) {
+                var dataUser = r.response;
 
-        for(var i = 0; i < userNameLastName.length; i++) {
-            userNameLastName[i].innerHTML = renderData.first_name + ' '+ renderData.last_name;
-        }
-        for(var a = 0; a < dataUser.length; a++) {
-            dataUser[a].innerHTML = renderData.bdate;
-        }
-        for(var c = 0; c < countFriends.length; c++) {
-            countFriends[c].innerHTML = renderData.counters.friends;
-        }
-        for(var b = 0; b < countMovies.length; b++) {
-            countMovies[b].innerHTML = renderData.counters.videos;
-        }
-        for(var x = 0; x < countPhoto.length; x++) {
-            countPhoto[x].innerHTML = renderData.counters.photos;
-        }
+                dataUser.forEach(function (item, i) {
 
-        if(renderData.online === 0) {
-            statusUser.innerHTML = 'Online';
-        } else {
-            statusUser.innerHTML = 'Offline';
-        }
+                    if (data.status === 'connected') {
+                        $('.status').text('Online');
+                    } else {
+                        $('.status').text('Offline');
+                    }
 
-        var statusText = document.getElementsByClassName('status-text'),
-            cityUser = document.getElementsByClassName('city-user'),
-            img400 = document.getElementsByClassName('image_400'),
-            img50 = document.getElementsByClassName('img_50'),
-            countAudio = document.getElementsByClassName('count_audio'),
-            countOnlineFriends = document.getElementsByClassName('count_online_friends'),
-            countFollowers = document.getElementsByClassName('count_followers'),
-            countMarks = document.getElementsByClassName('count_marks');
+                    $('.user-name').text(item.first_name);
+                    $('.last-name').text(item.last_name);
+                    $('.status-text').text(item.status);
+                    $('.city-user').text(item.home_town);
+                    $('.languages').text(item.personal.langs);
+                    $('.last-name-name').text(item.first_name + item.last_name);
+                    $('.img_50').attr('src', item.photo_50);
+                    $('.image_400').attr('src', item.photo_400_orig);
 
-        statusText[0].innerHTML = renderData.status;
-        cityUser[0].innerHTML = renderData.home_town;
-        countAudio[0].innerHTML = renderData.counters.audios;
-        countOnlineFriends[0].innerHTML = renderData.counters.online_friends;
-        countFollowers[0].innerHTML = renderData.counters.followers;
-        countMarks[0].innerHTML = renderData.counters.notes;
-        img400[0].setAttribute('src', renderData.photo_400_orig);
-        img50[0].setAttribute('src', renderData.photo_50);
-    });
-
-    var userId =  localStorage.getItem('UserId'); // берём по ключу Id пользователя
-
-    /** Получаем альбомы **/
-    $.ajax({
-        maethod: 'POST',
-        url: 'https://api.vk.com/method/photos.getAlbums?owner_id='+ userId +'&v=5.52&access_token=' + storageTokken,
-        dataType : 'jsonp'
-    }).done(function (data) {
-        var  albom = document.getElementsByClassName('img-albom'),
-             countAlboms = document.getElementsByClassName('count-albom'),
-             titleAlbom = document.getElementsByClassName('shadow-decoration');
-
-        data.response.items.forEach(function (item, i) {
-
-            titleAlbom[i].innerHTML = item.title;
-            countAlboms[i].innerHTML = item.size;
-
-            /** Добавляем информацию в фото **/
-            $.ajax({
-                maethod: 'POST',
-                url: 'https://api.vk.com/method/photos.get?owner_id='+ userId +'&album_id='+ item.id +'&v=5.52&access_token=' + storageTokken,
-                dataType : 'jsonp'
-            }).done(function (photo) {
-
-                photo.response.items.forEach(function (item, i) {
-
-                    albom[i].setAttribute('src', item.photo_604); // Ошибка < -------- перебор тегов, данные всё равно поступают
-
-                });
+                    /** Счетчики **/
+                    $('.count_friends').text(item.counters.friends);
+                    $('.count_followers').text(item.counters.followers);
+                    $('.count_photo').text(item.counters.photos);
+                    $('.count_marks').text(item.counters.notes);
+                    $('.count_movies').text(item.counters.videos);
+                    $('.count_online_friends').text(item.counters.online_friends);
+                    $('.count-albom').text(item.counters.albums);
+                })
             });
-        });
-    });
-
-    /** Получаем видео **/
-    $.ajax({
-        maethod: 'POST',
-        url: 'https://api.vk.com/method/video.get?owner_id='+ userId +'&count=2&offset=12&v=5.68&access_token=' + storageTokken,
-        dataType : 'jsonp'
-    }).done(function (data) {
-        var imgMovies = document.getElementsByClassName('img-movies'),
-            titleText = document.getElementsByClassName('text-title');
-
-        data.response.items.forEach(function (item) {
-
-            for(var a=0; a < titleText.length; a++) {
-                imgMovies[a].setAttribute('src', item.photo_130);
-                titleText[a].innerHTML = item.title;
-            }
-        })
+        } else if (data.status === 'not_authorized') {
+            console.log('Вы зарегистрировались, но не разрешил доступ приложению');
+        } else {
+            console.log('Вы не зарегистрировались');
+            return false;
+        }
 
     });
+};
+setTimeout(function() {
+    var el = document.createElement('script');
+        el.type = 'text/javascript';
+        el.src = 'https://vk.com/js/api/openapi.js?146';
+        el.async = true;
+        document.getElementById('vk_api_transport').appendChild(el);
+}, 0);
 
-    /** Получаем друзей **/
-    $.ajax({
-        maethod: 'POST',
-        url: 'https://api.vk.com/method/friends.get?order&list_id&count&offset&fields=photo_200_orig&name_case&v=5.52&access_token=' + storageTokken,
-        dataType : 'jsonp'
-    }).done(function (data) {
-        console.log('data', data);
+/** Рендерим Друзей **/
+function friendsUsers(result) {
+    console.log('r - ', result);
 
-        var friendsPage = document.getElementsByClassName('friends-page'),
-            friendsPageOnline = document.getElementsByClassName('friends-page-online');
+    for(var i = 0; i < 6; i++ ) {
+        var friends = document.createElement('li'),
+            img = document.createElement('img'),
+            span = document.createElement('span');
 
-        data.response.items.forEach(function (elem, i) { // i: 0 - 1
-            var li = document.createElement('li');
+        if (result.response[i].online !== 1) {
+            var friendsOnlineSpan = document.createElement('span'),
+                friendsOnlineImg = document.createElement('img'),
+                onlineFriends = document.createElement('li');
 
-            console.log('elem', elem);
+            friendsOnlineSpan.innerText = result.response[i].first_name;
+            friendsOnlineImg.setAttribute('src', result.response[i].photo_50);
 
-            if (elem.online === 1 || i <= 6) {
-                li.innerHTML = '<span>'+ elem.first_name +'</span><img src='+ elem.photo_200_orig +'>';
-                friendsPageOnline[0].appendChild(li);
-            }
+            onlineFriends.append(friendsOnlineSpan, friendsOnlineImg);
+            $('.friends-page-online').append(onlineFriends);
+        } else {
+            return true;
+        }
 
-            if (i < 6) {
-                li.innerHTML = '<span>'+ elem.first_name +'</span><img src='+ elem.photo_200_orig +'>';
-                friendsPage[0].appendChild(li);
-            }
-        });
-    });
+        span.innerText = result.response[i].first_name;
+        img.setAttribute('src', result.response[i].photo_50);
 
-});
+        friends.append(span, img);
+        $('.friends-page').append(friends);
+    }
 
-/** Пдробная информация **/
-function showMenuMoreInformation() {
-    var mainBlock = $('.true-logic');
+}
+
+/** Вставляем полученные картинки **/
+function photoUsers(result) {
+    for(var a = 1; a < result.response.length; a++) {
+        var li = document.createElement('li'),
+            href = document.createElement('a'),
+            img = document.createElement('img');
+
+        img.setAttribute('src', result.response[a].src_xbig);
+
+        href.append(img);
+        li.append(href);
+        $('.main-photo-4').append(li);
+    }
+}
+
+//  Показать подробную информацию
+function showMenuMoreInformation () {
     logic = !logic;
 
     if(logic) {
-        $('.more-information-user a').text('Скрыть подробную информацию');
-        mainBlock.show();
+        document.getElementsByClassName('true-logic')[0].style.display = 'block';
+        document.getElementById('show-hide-block').innerText = 'Скрыть подробную информацию';
     } else {
-        $('.more-information-user a').text('Показать подробную информацию');
-        mainBlock.hide();
+        document.getElementsByClassName('true-logic')[0].style.display = 'none';
+        document.getElementById('show-hide-block').innerText = 'Показать подробную информацию';
     }
 }

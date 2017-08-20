@@ -7,6 +7,8 @@
   justify-content: space-between;
   align-items: stretch;
   width: 100%;
+  max-height: 110vh;
+  overflow: hidden;
   & div {
     align-items: stretch;
     justify-content: space-around;
@@ -158,6 +160,8 @@
     justify-content: flex-start;
     align-items: center;
     width: 33%!important;
+    margin: 10px 0!important;
+    height: auto!important;
   }
   img {
     border-radius: 100%;
@@ -166,10 +170,11 @@
     margin: 10px auto
   }
   span {
-    margin: auto!important;
+    margin: 10px 0 5px 0;
+    text-align: center;
+    padding: 0;
     color: #2a5885!important;
     cursor: pointer;
-    margin-top: -1px;
     padding-bottom: 1px;
     &:hover {
       padding-bottom: 0;
@@ -195,9 +200,13 @@
     font-size: 12.5px;
   }
   a {
-    position: relative;
-    display: flex;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
     cursor: pointer;
+    overflow: hidden;
   }
   ul {
     display: flex;
@@ -210,11 +219,13 @@
   }
   li {
     position: relative;
-    align-items: center;
-    align-self: center;
+    margin: auto 5px;
+    width: 25%;
+    height: 123px;
     & img {
-      height: 106px;
-      width: auto;
+      width: 103%;
+      height: 120%;
+      margin: calc(-15%) auto auto;
       z-index: 2;
     }
   }
@@ -412,6 +423,11 @@
   position: relative;
   flex-grow: 1;
   margin-left: 15px;
+  max-height: 100vh;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 0;
+  }
 }
 
 .top-panel, .bottom-panel {
@@ -491,6 +507,9 @@
     width: 70%;
     color: #2a5885;
     cursor: pointer;
+    &:hover {
+      border-bottom: 1px solid #2a5885;
+    }
   }
   a {
     display: block;
