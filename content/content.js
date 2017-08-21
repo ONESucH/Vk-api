@@ -19,15 +19,15 @@ window.vkAsyncInit = function() {
             // Получаем доступ к файлам
             var photoAll = document.createElement('script'),
                 friendsAll = document.createElement('script'),
-                groupAll = document.createElement('script');
+                groupAll = document.createElement('script'),
+                album = document.createElement('script');
 
             photoAll.src = 'https://api.vk.com/method/photos.getAll?owner_id='+ data.session.user.id +'&count=4&access_token='+ token +'&callback=photoUsers';
             friendsAll.src = 'https://api.vk.com/method/friends.get?user_id='+ data.session.user.id +'&order=random&fields=nickname,domain,sex,bdate,city,country,timezone,photo_50,photo_100,photo_200_orig,has_mobile,contacts,education,online,relation,last_seen,status,can_write_private_message,can_see_all_posts,can_post,universities&access_token='+ token +'&callback=friendsUsers';
             groupAll.src = 'https://api.vk.com/method/groups.get?user_id='+ data.session.user.id +'&extended=1&counte=5&order=random&fields=nickname,domain,sex,bdate,city,country,timezone,photo_50,photo_100,photo_200_orig,has_mobile,contacts,education,online,relation,last_seen,status,can_write_private_message,can_see_all_posts,can_post,universities&access_token='+ token +'&callback=groupsUsers';
+            album.src = 'https://api.vk.com/method/photos.getAlbums?owner_id='+ data.session.user.id +'&album_ids=85927952&counte=2&access_token='+ token +'&callback=albumsUsers';
 
-            document.getElementsByTagName('head')[0].appendChild(photoAll);
-            document.getElementsByTagName('head')[0].appendChild(friendsAll);
-            document.getElementsByTagName('head')[0].appendChild(groupAll);
+            document.getElementsByTagName('head')[0].appendChild(photoAll, friendsAll, groupAll, album);
 
             VK.Api.call('users.get', {user_ids:data.session.user.id, fields:'photo_id,verified,sex,bdate,city,country,home_town,has_photo,photo_50,' +
             'photo_100,photo_200_orig,photo_200,photo_400_orig,photo_max,photo_max_orig,online,domain,has_mobile,contacts,site,education,universities,' +
@@ -74,17 +74,26 @@ window.vkAsyncInit = function() {
     });
 };
 setTimeout(function() {
+
     var el = document.createElement('script');
         el.type = 'text/javascript';
         el.src = 'https://vk.com/js/api/openapi.js?146';
         el.async = true;
         document.getElementById('vk_api_transport').appendChild(el);
+
 }, 0);
+
+/** Рендерим Альбомы **/
+function albumsUsers(result) {
+
+    console.log('result', result);
+
+}
 
 /** Рендерим группы **/
 function groupsUsers(result) {
-    console.log('result', result);
     for(var i = 1; i < result.response.length; i++) {
+
         if (i < 6) {
             var group = document.getElementsByClassName('group')[0],
                 groupMain = document.createElement('div'),
@@ -110,12 +119,12 @@ function groupsUsers(result) {
             groupMain.append(divImg, divName);
             group.appendChild(groupMain);
         }
+
     }
 }
 
 /** Рендерим Друзей **/
 function friendsUsers(result) {
-
     for(var i = 0; i < result.response.length; i++) {
 
         if (result.response[0].online === 1 || $('.friends-page-online li').length < 6) {
@@ -140,12 +149,14 @@ function friendsUsers(result) {
             friends.append(span, img);
             $('.friends-page').append(friends);
         }
+
     }
 }
 
 /** Вставляем полученные картинки **/
 function photoUsers(result) {
     for(var a = 1; a < result.response.length; a++) {
+
         var li = document.createElement('li'),
             href = document.createElement('a'),
             img = document.createElement('img');
@@ -155,6 +166,7 @@ function photoUsers(result) {
         href.append(img);
         li.append(href);
         $('.main-photo-4').append(li);
+
     }
 }
 
