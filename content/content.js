@@ -18,13 +18,16 @@ window.vkAsyncInit = function() {
         } else if (data.status === 'connected') {
             // Получаем доступ к файлам
             var photoAll = document.createElement('script'),
-                friendsAll = document.createElement('script');
+                friendsAll = document.createElement('script'),
+                groupAll = document.createElement('script');
 
             photoAll.src = 'https://api.vk.com/method/photos.getAll?owner_id='+ data.session.user.id +'&count=4&access_token='+ token +'&callback=photoUsers';
-            friendsAll.src = 'https://api.vk.com/method/friends.get?user_id='+ data.session.user.id +'&list_id&order=random&fields=nickname,domain,sex,bdate,city,country,timezone,photo_50,photo_100,photo_200_orig,has_mobile,contacts,education,online,relation,last_seen,status,can_write_private_message,can_see_all_posts,can_post,universities&access_token='+ token +'&callback=friendsUsers';
+            friendsAll.src = 'https://api.vk.com/method/friends.get?user_id='+ data.session.user.id +'&order=random&fields=nickname,domain,sex,bdate,city,country,timezone,photo_50,photo_100,photo_200_orig,has_mobile,contacts,education,online,relation,last_seen,status,can_write_private_message,can_see_all_posts,can_post,universities&access_token='+ token +'&callback=friendsUsers';
+            groupAll.src = 'https://api.vk.com/method/groups.get?user_id='+ data.session.user.id +'&extended=1&counte=5&order=random&fields=nickname,domain,sex,bdate,city,country,timezone,photo_50,photo_100,photo_200_orig,has_mobile,contacts,education,online,relation,last_seen,status,can_write_private_message,can_see_all_posts,can_post,universities&access_token='+ token +'&callback=groupsUsers';
 
             document.getElementsByTagName('head')[0].appendChild(photoAll);
             document.getElementsByTagName('head')[0].appendChild(friendsAll);
+            document.getElementsByTagName('head')[0].appendChild(groupAll);
 
             VK.Api.call('users.get', {user_ids:data.session.user.id, fields:'photo_id,verified,sex,bdate,city,country,home_town,has_photo,photo_50,' +
             'photo_100,photo_200_orig,photo_200,photo_400_orig,photo_max,photo_max_orig,online,domain,has_mobile,contacts,site,education,universities,' +
@@ -78,16 +81,44 @@ setTimeout(function() {
         document.getElementById('vk_api_transport').appendChild(el);
 }, 0);
 
+/** Рендерим группы **/
+function groupsUsers(result) {
+    console.log('result', result);
+    for(var i = 1; i < result.response.length; i++) {
+        if (i < 6) {
+            var group = document.getElementsByClassName('group')[0],
+                groupMain = document.createElement('div'),
+                divImg = document.createElement('div'),
+                divName = document.createElement('div'),
+                img = document.createElement('img'),
+                nameGroup = document.createElement('p'),
+                statusgroup = document.createElement('a');
+
+            $('.count-group').text(result.response.length);
+
+            img.setAttribute('src', result.response[i].photo_50);
+
+            nameGroup.innerText = result.response[i].status;
+            statusgroup.innerText = result.response[i].name;
+
+            groupMain.className = 'group-main';
+            divImg.className = 'photo-groups';
+            divName.className = 'names-groups';
+
+            divImg.appendChild(img);
+            divName.append(statusgroup, nameGroup);
+            groupMain.append(divImg, divName);
+            group.appendChild(groupMain);
+        }
+    }
+}
+
 /** Рендерим Друзей **/
 function friendsUsers(result) {
-    console.log('r - ', result);
 
-    for(var i = 0; i < 6; i++ ) {
-        var friends = document.createElement('li'),
-            img = document.createElement('img'),
-            span = document.createElement('span');
+    for(var i = 0; i < result.response.length; i++) {
 
-        if (result.response[i].online !== 1) {
+        if (result.response[0].online === 1 || $('.friends-page-online li').length < 6) {
             var friendsOnlineSpan = document.createElement('span'),
                 friendsOnlineImg = document.createElement('img'),
                 onlineFriends = document.createElement('li');
@@ -97,17 +128,19 @@ function friendsUsers(result) {
 
             onlineFriends.append(friendsOnlineSpan, friendsOnlineImg);
             $('.friends-page-online').append(onlineFriends);
-        } else {
-            return true;
         }
+        if (i < 6) {
+            var friends = document.createElement('li'),
+                img = document.createElement('img'),
+                span = document.createElement('span');
 
-        span.innerText = result.response[i].first_name;
-        img.setAttribute('src', result.response[i].photo_50);
+            span.innerText = result.response[i].first_name;
+            img.setAttribute('src', result.response[i].photo_50);
 
-        friends.append(span, img);
-        $('.friends-page').append(friends);
+            friends.append(span, img);
+            $('.friends-page').append(friends);
+        }
     }
-
 }
 
 /** Вставляем полученные картинки **/
