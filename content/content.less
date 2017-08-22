@@ -189,12 +189,12 @@
 
 .white-block {
   position: relative;
-  background: #fff;
-  border-radius: 2px;
-  box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
   margin: 15px 0 15px;
   padding: 0;
   font-size: 12.5px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
 }
 
 .friends-page, .friends-page-online {
@@ -748,10 +748,9 @@
     border: none;
     outline: none;
   }
-  input::-webkit-input-placeholder {color:#828282;}
-  input::-moz-placeholder          {color:#828282;}/* Firefox 19+ */
-  input:-moz-placeholder           {color:#828282;}/* Firefox 18- */
-  input:-ms-input-placeholder      {color:#828282;}
+  input:-ms-input-placeholder {
+    color:#828282;
+  }
 }
 
 .icons a {
@@ -761,6 +760,18 @@
 .post {
   position: relative;
   padding: 15px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+  margin-bottom: 15px;
+}
+
+.posts-page {
+  background: none!important;
+}
+
+.footer-like {
+  cursor: pointer;
 }
 
 .top-title {
@@ -772,6 +783,7 @@
     border-radius: 100%;
     width: 50px;
     height: 50px;
+    cursor: pointer;
   }
   a {
     color: #c4cfdb;
@@ -782,8 +794,8 @@
 
 .user-name-last-name {
   display: flex;
-  flex-flow: column;
-  justify-content: flex-start;
+  flex-flow: column nowrap;
+  justify-content: center;
   align-items: stretch;
   list-style: none;
   flex-grow: 10;
@@ -875,14 +887,19 @@
 .post-information {
   width: 100%;
   p {
-    padding: 10px 0;
+    padding: 10px 35px 10px 0;
     overflow: hidden;
+    width: 100%;
     word-wrap: break-word;
   }
 }
 
 .page-post {
   padding-bottom: 15px;
+  margin: 10px auto 0;
+  img {
+    width: 90%;
+  }
 }
 
 .footer-post {

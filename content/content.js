@@ -1,7 +1,5 @@
-// 6154467 - id app
-// 85927952 - useriD
 var logic = false;
-var offlineToken = 'https://oauth.vk.com/authorize?client_id=6154467&display=popup&scope=notify,friends,photos,audio,video,pages,status,notes,wall,ads,docs,groups,offline&redirect_uri=close.html&response_type=token';
+var Token = 'https://oauth.vk.com/authorize?client_id=6154467&display=popup&scope=notify,friends,photos,audio,video,pages,status,notes,wall,ads,docs,groups,offline&redirect_uri=close.html&response_type=token';
 var tokenRender = '0d6928f435c3c9389f97af5f24922d42d17e7cb2102a7833e6984e05872b1e2f687ab74a53dee340533eb';
 
 localStorage.setItem('token', tokenRender);  // сохраняем в local Storage
@@ -28,8 +26,8 @@ window.vkAsyncInit = function() {
             friendsAll.src = 'https://api.vk.com/method/friends.get?user_id='+ data.session.user.id +'&order=random&fields=nickname,domain,sex,bdate,city,country,timezone,photo_50,photo_100,photo_200_orig,has_mobile,contacts,education,online,relation,last_seen,status,can_write_private_message,can_see_all_posts,can_post,universities&access_token='+ token +'&callback=friendsUsers';
             groupAll.src = 'https://api.vk.com/method/groups.get?user_id='+ data.session.user.id +'&extended=1&counte=5&order=random&fields=nickname,domain,sex,bdate,city,country,timezone,photo_50,photo_100,photo_200_orig,has_mobile,contacts,education,online,relation,last_seen,status,can_write_private_message,can_see_all_posts,can_post,universities&access_token='+ token +'&callback=groupsUsers';
             album.src = 'https://api.vk.com/method/photos.getAlbums?owner_id='+ data.session.user.id +'&album_ids=0&count=2&need_covers=1&photo_sizes=1&access_token='+ token +'&callback=albumUsers';
-            movies.src = 'https://api.vk.com/method/video.get?owner_id='+ data.session.user.id +'&count=2&offset&access_token='+ token +'&callback=moviesUsers';
-            reposts.src = 'https://api.vk.com/method/wall.get?owner_id='+ data.session.user.id +'&post_id=1&count=5&offset&access_token='+ token +'&callback=repostsUsers';
+            movies.src = 'https://api.vk.com/method/video.get?owner_id='+ data.session.user.id +'&count=2&access_token='+ token +'&callback=moviesUsers';
+            reposts.src = 'https://api.vk.com/method/wall.get?owner_id='+ data.session.user.id +'&post_id=1&count=5&extended=1&fields=nickname,domain,sex,bdate,city,country,timezone,photo_50,photo_100,photo_200_orig,has_mobile,contacts,education,online,relation,last_seen,status,can_write_private_message,can_see_all_posts,can_post,universities&access_token='+ token +'&callback=repostsUsers';
 
             document.getElementsByTagName('head')[0].appendChild(photoAll);
             document.getElementsByTagName('head')[0].appendChild(friendsAll);
@@ -92,42 +90,99 @@ setTimeout(function() {
 
 }, 0);
 
+/** Рендерим Репосты **/
 function repostsUsers(result) {
-    console.log('repost', result);
-    result.response.forEach(function (item, i) {
-        console.log('item', item);
-        var post = document.createElement('div'),
-            topPost = document.createElement('div'),
-            postInformation = document.createElement('div'),
-            footerPost = document.createElement('div'),
+    var a = 0;
+
+    result.response.wall.forEach(function (item, i) {
+        if(i > 0) {
+            var geniratorDate = new Date(item.date);
+            a++;
+
+            var post = document.createElement('div'),
+                // Top
+                topPost = document.createElement('div'),
+                topImg = document.createElement('img'),
+                topNameBlock = document.createElement('ul'),
+                topHref = document.createElement('a'),
+                topShowBlock = document.createElement('ul'),
+                topLi_1 = document.createElement('li'),
+                topLi_2 = document.createElement('li'),
+                showBlockLi_1 = document.createElement('li'),
+                showBlockLi_2 = document.createElement('li'),
+                // center
+                postInformation = document.createElement('div'),
+                titlePost = document.createElement('p'),
+                pagePost = document.createElement('div'),
+                postImg = document.createElement('img'),
+                // footer
+                footerPost = document.createElement('div');
+                footerUlPage = document.createElement('ul');
+                footerLike = document.createElement('li');
+                footerComments = document.createElement('li');
+                footerRepost = document.createElement('li');
+                footerSearch = document.createElement('div');
+
             // Top
-            topImg = document.createElement('img'),
-            topNameBlock = document.createElement('ul'),
-            topHref = document.createElement('a');
-            topShowBlock = document.createElement('ul');
+            topImg.setAttribute('src', result.response.profiles[0].photo); // центр
+            // center
+            if (item.attachment.photo) {
+                postImg.setAttribute('src', item.attachment.photo.src_xbig);
+            }
 
+            // Добавляем классы основному контейнеру
+            post.className = 'post';
+            topPost.className = 'top-title';
+            postInformation.className = 'post-information';
+            footerPost.className = 'footer-post';
 
-        topImg.setAttribute('src', result.response[1].attachments[0].link.image_src);
+            // Вложенности
+            // top
+            topHref.innerHTML = '<i class="fa fa-ellipsis-h" aria-hidden="true"></i>';
+            //footer
+            footerSearch.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i><span>'+ item.likes.count +'</span>';
+            footerLike.innerHTML = '<i class="fa fa-heart" aria-hidden="true"></i>Нравится<span>'+ item.likes.count +'</span>';
+            footerComments.innerHTML = '<i class="fa fa-comment" aria-hidden="true"></i>Комментировать';
+            footerRepost.innerHTML = '<i class="fa fa-bullhorn" aria-hidden="true"></i><span>'+ item.likes.can_publish +'</span>';
 
-        // Top img
-        //topImg.setAttribute('src', i.item.attachments[0].link.image_src);
+            //классы
+            //top
+            topNameBlock.className = 'user-name-last-name';
+            topHref.className = 'show-user-block';
+            topShowBlock.className = 'show-menu-post';
+            topLi_2.className = 'data-user';
+            //center
+            postInformation.className = 'post-information';
+            pagePost.className = 'page-post';
+            //foter
+            footerLike.className = 'footer-like';
 
-        // Добавляем классы
-        post.className = 'post';
-        topPost.className = 'top-title';
-        postInformation.className = 'post-information';
-        footerPost.className = 'footer-post';
+            // Text
+            // top
+            topLi_1.innerText = result.response.profiles[0].first_name + ' ' + result.response.profiles[0].last_name;
+            topLi_2.innerText = geniratorDate.getDate() + ' месяц ' + geniratorDate.getHours()+ ':' + geniratorDate.getMinutes();
+            showBlockLi_1.innerText = 'Удалить запись';
+            showBlockLi_2.innerText = 'Закрепить';
+            // center
+            titlePost.innerText = item.text;
 
+            // Узлы
+            // top
+            topPost.append(topImg, topNameBlock, topHref, topShowBlock);
+            topNameBlock.append(topLi_1, topLi_2);
+            topShowBlock.append(showBlockLi_1, showBlockLi_2);
+            //center
+            pagePost.append(postImg);
+            postInformation.append(titlePost, pagePost);
+            //footer
+            footerPost.append(footerUlPage, footerSearch);
+            footerUlPage.append(footerLike, footerComments, footerRepost);
 
-
-
-        // top
-        topPost.append(topImg, topNameBlock, topHref, topShowBlock);
-
-        // Добавляем узлы
-        post.append(topPost, postInformation, footerPost);
-        $('.all-posts').append(post);
-    })
+            // Добавляем узлы к основному контейнеру
+            post.append(topPost, postInformation, footerPost);
+            $('.all-posts').append(post);
+        }
+    });
 }
 
 /** Рендерим Видео **/
