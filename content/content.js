@@ -1,6 +1,6 @@
 var logic = false;
 var Token = 'https://oauth.vk.com/authorize?client_id=6154467&display=popup&scope=notify,friends,photos,audio,video,pages,status,notes,wall,ads,docs,groups,offline&redirect_uri=close.html&response_type=token';
-var tokenRender = '0d6928f435c3c9389f97af5f24922d42d17e7cb2102a7833e6984e05872b1e2f687ab74a53dee340533eb';
+var tokenRender = 'token';
 
 localStorage.setItem('token', tokenRender);  // сохраняем в local Storage
 var token = localStorage.getItem('token');  // извлекаем из local Storage
